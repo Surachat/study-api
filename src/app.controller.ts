@@ -1,8 +1,6 @@
 import { Controller, Get } from '@nestjs/common';
 import { AppService } from './app.service';
 import { InjectKnex, Knex , Connection} from 'nestjs-knex';
-import * as dotenv from 'dotenv';
-dotenv.config();
 @Controller()
 export class AppController {
   constructor(
