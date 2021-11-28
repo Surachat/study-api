@@ -1,12 +1,27 @@
 import { Controller, Get } from '@nestjs/common';
 import { AppService } from './app.service';
-
+import { InjectKnex, Knex , Connection} from 'nestjs-knex';
+import * as dotenv from 'dotenv';
+dotenv.config();
 @Controller()
 export class AppController {
-  constructor(private readonly appService: AppService) {}
+  constructor(
+    private readonly appService: AppService,
+    @InjectKnex() private readonly knex: Knex,
+  ) {}
 
   @Get()
-  getHello(): string {
-    return this.appService.getHello();
+  async getHello() {
+    // return this.appService.getHello();
+
+    if (!await this.knex.schema.hasTable('userst')) {
+      await this.knex.schema.createTable('userst', table => {
+        table.increments('id').primary();
+        table.string('name');
+      });
+    }
+    await this.knex.table('userst').insert({ name: 'Name' });
+    const userst = await this.knex.table('userst');
+    return { userst };
   }
 }
